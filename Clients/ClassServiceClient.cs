@@ -3,8 +3,7 @@ using AdminService.Models;
 
 namespace AdminService.Clients;
 
-public class ClassServiceClient
-{
+public class ClassServiceClient : IClassServiceClient{
     private readonly HttpClient _httpClient;
 
     public ClassServiceClient(HttpClient httpClient)

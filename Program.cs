@@ -1,6 +1,7 @@
 using Scalar.AspNetCore;
 using AdminService.Clients;
 using MongoDB.Driver;
+using AdminService.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,8 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddHttpClient<IClassServiceClient, ClassServiceClient>();
 
 builder.Services.AddSingleton<IMongoClient>(sp =>
     new MongoClient(builder.Configuration["MongoDB:ConnectionString"]));
