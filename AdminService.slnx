@@ -1,4 +1,4 @@
 <Solution>
+  <Project Path="../AdminService.Tests/AdminService.Tests.csproj" />
   <Project Path="AdminService.csproj" />
-  <Project Path="AdminService.Tests/AdminService.Tests.csproj" />
 </Solution>
