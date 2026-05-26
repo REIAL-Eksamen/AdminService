@@ -1,92 +1,55 @@
-using AdminService.DTOs;
-using Microsoft.AspNetCore.Mvc;
 using AdminService.Models;
-using AdminService.Clients;
-using AdminService.Repositories;
-
+using AdminService.Services;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
 public class AdminController : ControllerBase
 {
-    private readonly IClassServiceClient _classServiceClient;
-    private readonly IAdminRepository _repository;
+    private readonly AdminService.Services.AdminService _adminService;
     private readonly ILogger<AdminController> _logger;
 
-  /*  public AdminController(IMongoClient mongoClient, ClassServiceClient classServiceClient, ILogger<AdminController> logger)
+    public AdminController(AdminService.Services.AdminService adminService, ILogger<AdminController> logger)
     {
-        var database = mongoClient.GetDatabase("AdminDB");
-        _adminCollection = database.GetCollection<Admin>("AdminCollection");
-        _classServiceClient = classServiceClient;
+        _adminService = adminService;
         _logger = logger;
     }
-    */
-  
-  public AdminController(
-      IAdminRepository repository,
-      IClassServiceClient classServiceClient,
-      ILogger<AdminController> logger)
-  {
-      _repository = repository;
-      _classServiceClient = classServiceClient;
-      _logger = logger;
-  }
-  
-  
-    // Henter alle admins
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var admins = await _repository.GetAll();
+        var admins = await _adminService.GetAllAsync();
         return Ok(admins);
     }
 
-    // Henter en specifik admin via ID
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAdmin(string id)
     {
-        var admin = await _repository.GetById(id);
-        if (admin == null) return NotFound();
+        var admin = await _adminService.GetByIdAsync(id);
+        if (admin is null) return NotFound();
         return Ok(admin);
     }
 
-    // Opretter en ny admin og tilknytter den til et center i ClassService
     [HttpPost]
     public async Task<IActionResult> CreateAdmin(Admin admin)
     {
-        await _repository.Create(admin);
-        await _classServiceClient.AddAdminToCenter(
-            admin.CenterId,
-            admin.FirstName,
-            admin.LastName,
-            admin.Id,
-            admin.Role);       
-        return CreatedAtAction(nameof(GetAdmin), new { id = admin.Id }, admin);
+        var created = await _adminService.CreateAsync(admin);
+        return CreatedAtAction(nameof(GetAdmin), new { id = created.Id }, created);
     }
 
-    // Opdaterer en eksisterende admin via ID
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAdmin(string id, Admin updated)
     {
-        var existing = await _repository.GetById(id);
-        if (existing == null) return NotFound();
-
-        updated.Id = id;
-        await _repository.Update(id, updated);
-        await _classServiceClient.AddAdminToCenter(
-            updated.CenterId,
-            updated.FirstName,
-            updated.LastName,
-            updated.Id,
-            updated.Role);
+        var success = await _adminService.UpdateAsync(id, updated);
+        if (!success) return NotFound();
         return NoContent();
     }
 
-    // Sletter en admin via ID
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAdmin(string id)
     {
-        await _repository.Delete(id);
+        var deleted = await _adminService.DeleteAsync(id);
+        if (!deleted) return NotFound();
         return NoContent();
     }
 }
