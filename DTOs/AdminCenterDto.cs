@@ -1,15 +1,15 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
 
-namespace AdminService.DTOs;
+namespace ClassService.DTOs;
 
-public class AdminCenterDto
+public class AdminCenterDTO
 {
-    [BsonRepresentation(BsonType.ObjectId)]
+    [JsonPropertyName("id")]
     public string AdminId { get; set; } = "";
     public string FirstName { get; set; } = "";
     public string LastName { get; set; } = "";
-    
-    [BsonRepresentation(BsonType.String)]
     public string Role { get; set; } = "";
+    public string CenterId { get; set; } = "";
 }
