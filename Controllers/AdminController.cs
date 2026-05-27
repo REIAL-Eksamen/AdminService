@@ -1,15 +1,16 @@
 using AdminService.Models;
 using AdminService.Services;
+using AdminService.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
 public class AdminController : ControllerBase
 {
-    private readonly AdminService.Services.AdminService _adminService;
+    private readonly IAdminService _adminService;
     private readonly ILogger<AdminController> _logger;
 
-    public AdminController(AdminService.Services.AdminService adminService, ILogger<AdminController> logger)
+    public AdminController(IAdminService adminService, ILogger<AdminController> logger)
     {
         _adminService = adminService;
         _logger = logger;
@@ -28,6 +29,13 @@ public class AdminController : ControllerBase
         var admin = await _adminService.GetByIdAsync(id);
         if (admin is null) return NotFound();
         return Ok(admin);
+    }
+    
+    [HttpGet("bycenter/{centerId}")]
+    public async Task<IActionResult> GetByCenter(string centerId)
+    {
+        var admins = await _adminService.GetByCenterAsync(centerId);
+        return Ok(admins);
     }
 
     [HttpPost]

@@ -7,10 +7,9 @@ public class AdminRepository : IAdminRepository
 {
     private readonly IMongoCollection<Admin> _adminCollection;
 
-    public AdminRepository(IMongoClient mongoClient)
+    public AdminRepository(IMongoDatabase db)
     {
-        var database = mongoClient.GetDatabase("AdminDB");
-        _adminCollection = database.GetCollection<Admin>("AdminCollection");
+        _adminCollection = db.GetCollection<Admin>("AdminCollection");
     }
 
     public async Task<List<Admin>> GetAll()
@@ -18,6 +17,12 @@ public class AdminRepository : IAdminRepository
         return await _adminCollection.Find(_ => true).ToListAsync();
     }
 
+    public async Task<List<Admin>> GetByCenterAsync(string centerId)
+    {
+        return await _adminCollection
+            .Find(a => a.CenterId == centerId)
+            .ToListAsync();
+    }
     public async Task<Admin?> GetById(string id)
     {
         return await _adminCollection

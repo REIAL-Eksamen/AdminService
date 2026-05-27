@@ -17,12 +17,16 @@ builder.Services.AddOpenApi();
 // MongoDB
 builder.Services.AddSingleton<IMongoClient>(
     new MongoClient(builder.Configuration["MongoDB:ConnectionString"]));
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+    sp.GetRequiredService<IMongoClient>()
+        .GetDatabase(builder.Configuration["MongoDB:DatabaseName"]));
 
 // Repository
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 
 // Service
 builder.Services.AddScoped<AdminService.Services.AdminService>();
+builder.Services.AddScoped<IAdminService, AdminService.Services.AdminService>();
 
 // Client
 builder.Services.AddHttpClient<IClassServiceClient, ClassServiceClient>(client =>

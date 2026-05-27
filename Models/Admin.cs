@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace AdminService.Models;
 
-public enum AdminRole {Receptionist, Instruktør, Centerleder, Pt}
+public enum AdminRole {Receptionist, Instructor, Centerleder, Pt}
 public class Admin
 {
     [BsonId]

@@ -4,7 +4,7 @@ using AdminService.Repositories;
 
 namespace AdminService.Services;
 
-public class AdminService
+public class AdminService :  IAdminService
 {
     private readonly IAdminRepository _admins;
     private readonly IClassServiceClient _classServiceClient;
@@ -19,6 +19,8 @@ public class AdminService
 
     public Task<Admin?> GetByIdAsync(string id) => _admins.GetById(id);
 
+    public Task<List<Admin>> GetByCenterAsync(string centerId) =>
+        _admins.GetByCenterAsync(centerId);
     public async Task<Admin> CreateAsync(Admin admin)
     {
         await _admins.Create(admin);

@@ -6,6 +6,7 @@ public interface IAdminRepository
 {
     Task<List<Admin>> GetAll();
     Task<Admin?> GetById(string id);
+    Task<List<Admin>> GetByCenterAsync(string centerId); 
     Task Create(Admin admin);
     Task Update(string id, Admin admin);
     Task Delete(string id);
